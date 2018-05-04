@@ -1,5 +1,4 @@
 package net.codejava.hibernate;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.hibernate.Session;
@@ -8,7 +7,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-public class ItemsManager {
+public class SalesManager {
 	
 	//
     protected SessionFactory sessionFactory;
@@ -37,11 +36,11 @@ public class ItemsManager {
         Date date = new Date();  
         
     	satr.setDate(date);
-    	satr.setProductName("Headset");
+    	satr.setProductName("Tie");
     	satr.setQuantity(20);
     	satr.setTotalCost(120);
     	satr.setUnitCost(6);
-     
+    	
         Session session = sessionFactory.openSession();
         session.beginTransaction();
      
@@ -66,7 +65,7 @@ public class ItemsManager {
  
     public static void main(String[] args) {
         // code to run the program
-        ItemsManager manager = new ItemsManager();
+        SalesManager manager = new SalesManager();
         manager.setup();
         manager.create();
         manager.exit();

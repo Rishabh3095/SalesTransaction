@@ -6,12 +6,12 @@
   <session-factory>
     <!-- Database connection settings -->
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="connection.url">jdbc:mysql://den1.mysql3.gear.host:3306/ezzat157bpr3</property>
-    <property name="connection.username">ezzat157bpr3</property>
+    <property name="connection.url">jdbc:mysql://den1.mysql1.gear.host:3306/ezzat157bp3</property>
+    <property name="connection.username">ezzat157bp3</property>
     <property name="connection.password">ezzat157b.</property>
     <property name="show_sql">true</property>
         
-    <mapping class="net.codejava.hibernate.Items" />
+    <mapping class="net.codejava.hibernate.SalesTransaction" />
      
   </session-factory>
 </hibernate-configuration>
