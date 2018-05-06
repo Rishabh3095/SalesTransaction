@@ -5,18 +5,26 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.criterion.Restrictions;
 
 public class SalesManager {
 	
 	//
-    protected SessionFactory sessionFactory;
+    protected static SessionFactory sessionFactory;
+	protected static Session session;
+	static Scanner numb = new Scanner(System.in);
+	static Scanner str = new Scanner(System.in);
+
+
 
     protected void setup() {
         // code to load Hibernate Session factory
@@ -35,24 +43,19 @@ public class SalesManager {
     	sessionFactory.close();
     }
  
-    protected void create() {
+    protected static void create() {
         // code to save
     	SalesTransaction satr = new SalesTransaction();
        
-    	boolean inputCheck = false;
-    	Scanner numb = new Scanner(System.in);
-    	Scanner str = new Scanner(System.in);
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
     	
     	System.out.println("Enter the name of the product: ");
     	
     	String prodName = "";
-    	while(!inputCheck)
-    	{
-        	prodName = str.nextLine();
-        	if(!prodName.trim().equals(""))
-        		System.out.println("Please enter valid input: ");
-        	inputCheck = true;
-    	}
+    	
+    	prodName = str.nextLine();
     	
     	System.out.println("Enter the quantity: ");
     	
@@ -70,68 +73,137 @@ public class SalesManager {
     	satr.setTotalCost(totalCost);
     	satr.setUnitCost(unitCost);
     	
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
+//        Session session = sessionFactory.openSession();
+//        session.beginTransaction();
      
         session.save(satr);
-        
-        numb.close();
-        str.close();
         session.getTransaction().commit();
         session.close();
     }
  
-    protected void read() throws ParseException {
-        // code to get
-    	
-    	Scanner in = new Scanner(System.in);
-    	
-    	System.out.println("Enter the details for the first date: ");
-    	System.out.println("Enter the year: ");
-    	int year = in.nextInt();
-    	System.out.println("Enter the month: ");
-    	int month = in.nextInt();
-    	System.out.println("Enter the date: ");
-    	int d = in.nextInt();
-    	Month m = Month.of(month);
+	/**
+	*Prints out the search interface
+	*/
+	public static void displaySearchInterface()
+	{
+		System.out.println();
+		System.out.println("Please select an option from the menu:");
+		System.out.println("=======================");
+		System.out.println("|1. Create a Sales Transaction	");
+		System.out.println("|2. Search one transaction	");
+		System.out.println("|3. Search transactions from one day		");
+		System.out.println("|4. Search transactions made between two dates				");
+		System.out.println("|5. Quit/Log Out...				");
+		System.out.println("=======================");
+	}
 
-    	LocalDate localid = LocalDate.of(year, m, d);
+     
+    private static void readMultipleDates() {
+    	
+		// TODO Auto-generated method stub
+    	
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
+    	
+    	System.out.println("Please enter the name of the product: ");
+    	String prodName = str.nextLine();
+    	
+//    	System.out.println("Enter the details for the first date: ");
+//    	System.out.println("Enter the year: ");
+//    	int year = in.nextInt();
+//    	System.out.println("Enter the month: ");
+//    	int month = in.nextInt();
+//    	System.out.println("Enter the date: ");
+//    	int d = in.nextInt();
+//    	Month m = Month.of(month);
+
+    	LocalDate localid = LocalDate.of(2018, 05, 04);
         java.sql.Date date1 = java.sql.Date.valueOf(localid);
 
-    	System.out.println("Enter the details for the second date: ");
-    	System.out.println("Enter the year: ");
-    	int year2 = in.nextInt();
-    	System.out.println("Enter the month: ");
-    	int month2 = in.nextInt();
-    	System.out.println("Enter the date: ");
-    	int d2 = in.nextInt();
-    	Month m2 = Month.of(month2);
+//    	System.out.println("Enter the details for the second date: ");
+//    	System.out.println("Enter the year: ");
+//    	int year2 = in.nextInt();
+//    	System.out.println("Enter the month: ");
+//    	int month2 = in.nextInt();
+//    	System.out.println("Enter the date: ");
+//    	int d2 = in.nextInt();
+//    	Month m2 = Month.of(month2);
 
-    	LocalDate localid2 = LocalDate.of(year2, m2, d2);
+    	LocalDate localid2 = LocalDate.of(2018, 05, 05);
         java.sql.Date date2 = java.sql.Date.valueOf(localid2);
+        	
+        Criteria criteria = session.createCriteria(SalesTransaction.class)
+           .add(Restrictions.between("date", date1, date2));
         
-    	Session session = sessionFactory.openSession();
-        session.beginTransaction();
-    	
+        List<SalesTransaction> result = criteria.list();
         
         //get all the dates from the date1 to date2
-        
-    	SalesTransaction input = session.get(SalesTransaction.class, date2);
+        for(SalesTransaction input: result)
+        {        	
+        	if(input.getProductName().equals(prodName))
+        	{
+            	System.out.println("Date: "+input.getDate());
+            	System.out.println("Product Name: "+input.getProductName());
+            	System.out.println("Total Quantity: "+input.getQuantity());
+            	System.out.println("Bulk Cost: "+input.getTotalCost());
+            	System.out.println("Unit Cost: "+input.getUnitCost());        		
+        	}
+        }
     	
-    	System.out.println("Date: "+input.getDate());
-    	System.out.println("Product Name: "+input.getProductName());
-    	System.out.println("Total Quantity: "+input.getQuantity());
-    	System.out.println("Bulk Cost: "+input.getTotalCost());
-    	System.out.println("Unit Cost: "+input.getUnitCost());
-    	
-
-    	in.close();
         session.getTransaction().commit();
-        session.close();
+        session.close();		
+	}
+
+	private static void readOneDate() {
+		// TODO Auto-generated method stub
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
+     	System.out.println("Please enter the name of the product: ");
+    	String prodName = str.nextLine();
+//    	
+//    	System.out.println("Enter the details for the first date: ");
+//    	System.out.println("Enter the year: ");
+//    	int year = in.nextInt();
+//    	System.out.println("Enter the month: ");
+//    	int month = in.nextInt();
+//    	System.out.println("Enter the date: ");
+//    	int d = in.nextInt();
+//    	Month m = Month.of(month);
+
+    	LocalDate localid = LocalDate.of(2018, 05, 05);
+        java.sql.Date date1 = java.sql.Date.valueOf(localid);
+
+        	
+        Criteria criteria = session.createCriteria(SalesTransaction.class)
+           .add(Restrictions.eq("date",  date1));
         
-    }
- 
-    protected void update() {
+        List<SalesTransaction> result = criteria.list();
+        
+        //get all the dates from the date1 to date2
+        for(SalesTransaction input: result)
+        {        	
+        	if(input.getProductName().equals(prodName))
+        	{
+            	System.out.println("Date: "+input.getDate());
+            	System.out.println("Product Name: "+input.getProductName());
+            	System.out.println("Total Quantity: "+input.getQuantity());
+            	System.out.println("Bulk Cost: "+input.getTotalCost());
+            	System.out.println("Unit Cost: "+input.getUnitCost());        		
+        	}
+        }
+    	
+        session.getTransaction().commit();
+        session.close();			
+	}
+
+	private static void readOneTransaction() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void update() {
         // code to modify a book
     }
  
@@ -143,8 +215,36 @@ public class SalesManager {
         // code to run the program
         SalesManager manager = new SalesManager();
         manager.setup();
-        manager.create();
-        manager.read();
-        manager.exit();
+
+    	boolean userInput = true;
+    	
+    	
+    	while(userInput)
+    	{
+        	displaySearchInterface();
+        	
+        	String choice = str.nextLine().trim();
+            
+    		int userChoice = Integer.parseInt(choice);
+    		
+    		switch (userChoice)
+    		{
+    			case 1: create();
+    					break;
+    			case 2: readOneTransaction();
+    					break;
+    			case 3: readOneDate();
+    					break;
+    			case 4: readMultipleDates();
+    					break;
+    			case 5: System.out.println("Logging out...");
+						userInput = false;
+						break;
+    			default:System.out.println("Not a valid option");
+						break;
+				
+    		}
+    	}
+    	manager.exit();
     }
 }
