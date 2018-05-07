@@ -94,7 +94,8 @@ public class SalesManager {
 		System.out.println("|2. Search one transaction	");
 		System.out.println("|3. Search transactions from one day		");
 		System.out.println("|4. Search transactions made between two dates				");
-		System.out.println("|5. Quit/Log Out...				");
+		System.out.println("|5. Total transactions				");
+		System.out.println("|6. Quit/Log Out...				");
 		System.out.println("=======================");
 	}
 
@@ -119,7 +120,7 @@ public class SalesManager {
     	int d = numb.nextInt();
     	Month m = Month.of(month);
 
-    	LocalDate localid = LocalDate.of(year, m, d);
+    	LocalDate localid = LocalDate.of(2018, 05, 04);
         java.sql.Date date1 = java.sql.Date.valueOf(localid);
 
     	System.out.println("Enter the details for the second date: ");
@@ -131,7 +132,7 @@ public class SalesManager {
     	int d2 = numb.nextInt();
     	Month m2 = Month.of(month2);
 
-    	LocalDate localid2 = LocalDate.of(year2, m2, d2);
+    	LocalDate localid2 = LocalDate.of(2018, 05, 06);
         java.sql.Date date2 = java.sql.Date.valueOf(localid2);
         	
         Criteria criteria = session.createCriteria(SalesTransaction.class)
@@ -217,7 +218,7 @@ public class SalesManager {
         session.getTransaction().commit();
         session.close();			
     }
-     
+ 
     public static void main(String[] args) throws ParseException {
         // code to run the program
         SalesManager manager = new SalesManager();
@@ -236,21 +237,22 @@ public class SalesManager {
     		
     		switch (userChoice)
     		{
-    			case 1: create();
-    					break;
-    			case 2: readOneTransaction();
-    					break;
-    			case 3: readOneDate();
-    					break;
-    			case 4: readMultipleDates();
-    					break;
-    			case 5: totalItems();
-						break;
-    			case 6: System.out.println("Logging out...");
-						userInput = false;
-						break;
-    			default:System.out.println("Not a valid option");
-						break;
+			case 1: create();
+					break;
+			case 2: readOneTransaction();
+					break;
+			case 3: readOneDate();
+					break;
+			case 4: readMultipleDates();
+					break;
+			case 5: totalItems();
+					break;
+			case 6: System.out.println("Logging out...");
+					userInput = false;
+					break;
+			default:System.out.println("Not a valid option");
+					break;
+				
     		}
     	}
     	manager.exit();
