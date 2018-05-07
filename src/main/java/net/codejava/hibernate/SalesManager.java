@@ -14,6 +14,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 public class SalesManager {
@@ -109,28 +110,28 @@ public class SalesManager {
     	System.out.println("Please enter the name of the product: ");
     	String prodName = str.nextLine();
     	
-//    	System.out.println("Enter the details for the first date: ");
-//    	System.out.println("Enter the year: ");
-//    	int year = in.nextInt();
-//    	System.out.println("Enter the month: ");
-//    	int month = in.nextInt();
-//    	System.out.println("Enter the date: ");
-//    	int d = in.nextInt();
-//    	Month m = Month.of(month);
+    	System.out.println("Enter the details for the first date: ");
+    	System.out.println("Enter the year: ");
+    	int year = numb.nextInt();
+    	System.out.println("Enter the month: ");
+    	int month = numb.nextInt();
+    	System.out.println("Enter the date: ");
+    	int d = numb.nextInt();
+    	Month m = Month.of(month);
 
-    	LocalDate localid = LocalDate.of(2018, 05, 04);
+    	LocalDate localid = LocalDate.of(year, m, d);
         java.sql.Date date1 = java.sql.Date.valueOf(localid);
 
-//    	System.out.println("Enter the details for the second date: ");
-//    	System.out.println("Enter the year: ");
-//    	int year2 = in.nextInt();
-//    	System.out.println("Enter the month: ");
-//    	int month2 = in.nextInt();
-//    	System.out.println("Enter the date: ");
-//    	int d2 = in.nextInt();
-//    	Month m2 = Month.of(month2);
+    	System.out.println("Enter the details for the second date: ");
+    	System.out.println("Enter the year: ");
+    	int year2 = numb.nextInt();
+    	System.out.println("Enter the month: ");
+    	int month2 = numb.nextInt();
+    	System.out.println("Enter the date: ");
+    	int d2 = numb.nextInt();
+    	Month m2 = Month.of(month2);
 
-    	LocalDate localid2 = LocalDate.of(2018, 05, 05);
+    	LocalDate localid2 = LocalDate.of(year2, m2, d2);
         java.sql.Date date2 = java.sql.Date.valueOf(localid2);
         	
         Criteria criteria = session.createCriteria(SalesTransaction.class)
@@ -162,22 +163,22 @@ public class SalesManager {
 
      	System.out.println("Please enter the name of the product: ");
     	String prodName = str.nextLine();
-//    	
-//    	System.out.println("Enter the details for the first date: ");
-//    	System.out.println("Enter the year: ");
-//    	int year = in.nextInt();
-//    	System.out.println("Enter the month: ");
-//    	int month = in.nextInt();
-//    	System.out.println("Enter the date: ");
-//    	int d = in.nextInt();
-//    	Month m = Month.of(month);
+    	
+    	System.out.println("Enter the details for the first date: ");
+    	System.out.println("Enter the year: ");
+    	int year = numb.nextInt();
+    	System.out.println("Enter the month: ");
+    	int month = numb.nextInt();
+    	System.out.println("Enter the date: ");
+    	int d = numb.nextInt();
+    	Month m = Month.of(month);
 
-    	LocalDate localid = LocalDate.of(2018, 05, 05);
+    	LocalDate localid = LocalDate.of(year, m, d);
         java.sql.Date date1 = java.sql.Date.valueOf(localid);
-
+        
         	
         Criteria criteria = session.createCriteria(SalesTransaction.class)
-           .add(Restrictions.eq("date",  date1));
+                .add(Restrictions.between("date", date1, date1));
         
         List<SalesTransaction> result = criteria.list();
         
@@ -202,15 +203,21 @@ public class SalesManager {
 		// TODO Auto-generated method stub
 		
 	}
+    
+    private static void totalItems()
+    {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
 
-	protected void update() {
-        // code to modify a book
+		Criteria criteria = session.createCriteria(SalesTransaction.class);
+		criteria.setProjection(Projections.rowCount());
+		List totalRows = criteria.list();
+		System.out.println("Total Transactions are = " + totalRows.get(0) + "   " + totalRows.size());
+		
+        session.getTransaction().commit();
+        session.close();			
     }
- 
-    protected void delete() {
-        // code to remove a book
-    }
- 
+     
     public static void main(String[] args) throws ParseException {
         // code to run the program
         SalesManager manager = new SalesManager();
@@ -237,12 +244,13 @@ public class SalesManager {
     					break;
     			case 4: readMultipleDates();
     					break;
-    			case 5: System.out.println("Logging out...");
+    			case 5: totalItems();
+						break;
+    			case 6: System.out.println("Logging out...");
 						userInput = false;
 						break;
     			default:System.out.println("Not a valid option");
 						break;
-				
     		}
     	}
     	manager.exit();

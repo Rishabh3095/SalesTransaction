@@ -40,6 +40,9 @@ public class SalesTransaction {
 	public void setQuantity(int quantity) {
 		Quantity = quantity;
 	}
+
+    @Id
+    @Column(name = "UnitCost")
 	public int getUnitCost() {
 		return UnitCost;
 	}
