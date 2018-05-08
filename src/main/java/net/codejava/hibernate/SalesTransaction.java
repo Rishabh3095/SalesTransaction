@@ -8,11 +8,16 @@ import javax.persistence.Table;
 @Table(name = "sales")
 
 public class SalesTransaction {
-	
+	@Id
+        @Column(name = "Date")
 	Date date;
+        @Column(name = "ProductName")
 	String ProductName;
+        @Column(name = "Quantity")
 	int Quantity;
+        @Column(name = "UnitCost")
 	int UnitCost;
+        @Column(name = "TotalCost")
 	int TotalCost;
 	
 	
@@ -20,8 +25,7 @@ public class SalesTransaction {
 	{	
 	}
 	
-    @Id
-    @Column(name = "Date")
+    
 	public Date getDate() {
 		return date;
 	}

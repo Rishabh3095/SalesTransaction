@@ -177,7 +177,7 @@ public class SalesManager {
     	LocalDate localid = LocalDate.of(year, m, d);
         java.sql.Date date1 = java.sql.Date.valueOf(localid);
         
-        	
+        
         Criteria criteria = session.createCriteria(SalesTransaction.class)
                 .add(Restrictions.between("date", date1, date1));
         
