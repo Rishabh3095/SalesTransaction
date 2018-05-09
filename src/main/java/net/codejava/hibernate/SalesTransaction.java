@@ -4,9 +4,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.hibernate.annotations.*;
 @Entity
 @Table(name = "sales")
-
+@NamedQueries
+(
+    {
+        @NamedQuery(name = "getTransactionByDate", query = "From SalesTransaction s WHERE s.date BETWEEN :date AND :date")     
+    }
+)
 public class SalesTransaction {
 	@Id
         @Column(name = "Date")
